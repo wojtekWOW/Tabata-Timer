@@ -8,6 +8,8 @@
         ResizeMode="NoResize"
         Title="Tabata Timer" Height="650" Width="300">
     <StackPanel Background="Blue" x:Name="sp1">
+        
+        <!-- Top Header -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

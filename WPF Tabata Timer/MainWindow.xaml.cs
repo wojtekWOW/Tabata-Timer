@@ -22,29 +22,21 @@ namespace WPF_Tabata_Timer
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Public Consrtuctor
         /// <summary>
-        /// Public Tabata class
+        /// Public Constructor
         /// </summary>
-        static class Tabata
-        {
-            #region Public Properties
-
-            static public bool Lanunched { get; set; }
-            static public bool Paused { get; set; }
-            static public bool Unlocked { get; set; }
-            static public int CurrentStatus { get; set; }
-            static public int StageNumber { get; set; }
-
-            #endregion
-        }
-
         public MainWindow()
         {
             InitializeComponent();
+            Tabata tabata = new Tabata();
             Tabata.Lanunched = false;
+            Tabata.Paused = true;
+            Tabata.MaxTime = 240;
         }
+        #endregion
 
-        #region Lock and Unlock Buttons method
+        #region Lock and Unlock Buttons method not used
         /// <summary>
         /// Lock and unlock buttons
         /// </summary>
@@ -65,20 +57,24 @@ namespace WPF_Tabata_Timer
         }
         #endregion
 
+        #region Start/Pause Button Click Event Method
         private void StartPauseButton_Click(object sender, RoutedEventArgs e)
         {
+            int maxTime = 0;
             if (Tabata.Lanunched == false)
             {
                 Tabata.Lanunched = true;
                 Tabata.StageNumber = 1;
-                sp1.Background = Brushes.LimeGreen;
+                sp1.Background = Brushes.LimeGreen;                
+                    Stage1.Background = Brushes.Green;
+                maxTime = Tabata.MaxTime;
             }
 
-            if(Tabata.Paused==false)
+            if (Tabata.Paused == true)
             {
                 Tabata.CurrentStatus = (int)Status.Prepare;
-                StartPauseButton.Content = "Start";
-                Tabata.Paused = true;
+                StartPauseButton.Content = "Pause";
+                Tabata.Paused = false;
 
                 #region Status Block not used jet
                 /*
@@ -91,90 +87,103 @@ namespace WPF_Tabata_Timer
                 */
                 #endregion
 
-                TopCountdown(240, TimeSpan.FromSeconds(1), current => StatusBlok.Text = current.ToString());
+                TopCountdown(maxTime, TimeSpan.FromSeconds(1), current => StatusBlok.Text = current.ToString());
                 Countdown(10, TimeSpan.FromSeconds(1), current => TimerBlock.Text = current.ToString());
             }
             else
-            {                
-                StartPauseButton.Content = "Pause";
-                Tabata.Paused = false;
+            {
+                StartPauseButton.Content = "Start";
+                Tabata.Paused = true;
             }
-            
-        }
 
+        }
+        #endregion
+
+        #region Top 4 minutes Countdown
         /// <summary>
         /// Method counting down 4 minutes
         /// </summary>
         /// <param name="count"></param>
         /// <param name="interval"></param>
-        /// <param name="ts"></param>
-        private void TopCountdown( int count, TimeSpan interval, Action<int> ts)
+        /// <param name="tostring"></param>
+        private void TopCountdown(int count, TimeSpan interval, Action<int> tostring)
         {
             DispatcherTimer dt = new DispatcherTimer();
             dt.Interval = interval;
             dt.Tick += (_, a) =>
             {
+                if (Tabata.Paused == true)
+                {
+                    dt.Stop();
+                    return;
+                }
                 if (count-- == 0)
-                { 
+                {
                     dt.Stop();
                     Tabata.CurrentStatus = (int)Status.Finish;
                 }
                 else
-                    ts(count);
+                    tostring(count);
             };
-            ts(count);
-            dt.Start();            
-        }
+            tostring(count);
+            dt.Start();
 
+        }
+        #endregion
+
+        #region Main excercise/rest countdown
         /// <summary>
         /// Method counting down each excercise and rest
         /// </summary>
         /// <param name="count"></param>
         /// <param name="interval"></param>
-        /// <param name="ts"></param>
-        private void Countdown(int count, TimeSpan interval, Action<int> ts)
+        /// <param name="tostring"></param>
+        private void Countdown(int count, TimeSpan interval, Action<int> tostring)
         {
             DispatcherTimer dt = new DispatcherTimer();
             dt.Interval = interval;
             dt.Tick += (_, a) =>
-            {
-                HighlightCurrentStage(Tabata.StageNumber);
-
+            {     
                 if (Tabata.CurrentStatus == (int)Status.Finish)
                 {
                     TimerBlock.Text = "0";
-                    return; 
+                    return;
                 }
                 count--;
                 if ((count == 0) && (Tabata.CurrentStatus == (int)Status.Prepare || Tabata.CurrentStatus == (int)Status.Rest))
                 {
                     dt.Stop();
-                    Tabata.CurrentStatus = (int)Status.Work;
+                    Tabata.CurrentStatus = (int)Status.Work;                    
                     sp1.Background = Brushes.Red;
                     Tabata.StageNumber++;
-
+                    HighlightCurrentStage(Tabata.StageNumber);
                     Countdown(20, TimeSpan.FromSeconds(1), current => TimerBlock.Text = current.ToString());
                 }
                 else if ((count == 0) && (Tabata.CurrentStatus == (int)Status.Work))
                 {
                     dt.Stop();
-                    Tabata.CurrentStatus = (int)Status.Rest;
+                    Tabata.CurrentStatus = (int)Status.Rest;                    
                     sp1.Background = Brushes.Blue;
                     Tabata.StageNumber++;
+                    HighlightCurrentStage(Tabata.StageNumber);
                     Countdown(10, TimeSpan.FromSeconds(1), current => TimerBlock.Text = current.ToString());
                 }
                 else
                 {
-                    
-                    ts(count);
+                    tostring(count);
                 }
             };
-            
-            ts(count);
+
+            tostring(count);
             dt.Start();
-            
         }
-        private void PauseCountdown(int count, TimeSpan interval, Action<int> ts)
+        #endregion
+
+        private void StartPauseButton_Click(object sender, RoutedEventArgs e, bool paused)
+        {
+
+        }
+        private void PauseCountdown(int count, TimeSpan interval, Action<int> tostring)
         {
             DispatcherTimer dt = new DispatcherTimer();
             dt.Interval = interval;
@@ -183,49 +192,55 @@ namespace WPF_Tabata_Timer
                 if (count-- == 0)
                     dt.Stop();
                 else
-                    ts(count);
+                    tostring(count);
             };
-            ts(count);
+            tostring(count);
             dt.Start();
         }
+
+        #region Highlight Current Stage
+        /// <summary>
+        /// Higlights curent stage block
+        /// </summary>
+        /// <param name="stageNumber">Number od a current stage</param>
         private void HighlightCurrentStage(int stageNumber)
         {
             if (stageNumber == 1)
                 Stage1.Background = Brushes.Green;
             if (stageNumber == 2)
             {
-                Stage2.Background = Brushes.DarkRed;
                 Stage1.Background = Brushes.Transparent;
+                Stage2.Background = Brushes.DarkRed;
             }
             if (stageNumber == 3)
             {
-                Stage3.Background = Brushes.DarkBlue;
                 Stage2.Background = Brushes.Transparent;
+                Stage3.Background = Brushes.DarkBlue;
             }
             if (stageNumber == 4)
             {
-                Stage4.Background = Brushes.DarkRed;
                 Stage3.Background = Brushes.Transparent;
+                Stage4.Background = Brushes.DarkRed;
             }
             if (stageNumber == 5)
             {
-                Stage5.Background = Brushes.DarkBlue;
                 Stage4.Background = Brushes.Transparent;
+                Stage5.Background = Brushes.DarkBlue;
             }
             if (stageNumber == 6)
             {
-                Stage6.Background = Brushes.DarkRed;
                 Stage5.Background = Brushes.Transparent;
+                Stage6.Background = Brushes.DarkRed;
             }
             if (stageNumber == 7)
             {
-                Stage7.Background = Brushes.DarkBlue;
                 Stage6.Background = Brushes.Transparent;
+                Stage7.Background = Brushes.DarkBlue;
             }
             if (stageNumber == 8)
             {
-                Stage8.Background = Brushes.DarkRed;
                 Stage7.Background = Brushes.Transparent;
+                Stage8.Background = Brushes.DarkRed;
             }
             if (stageNumber == 9)
             {
@@ -273,5 +288,6 @@ namespace WPF_Tabata_Timer
                 Stage16.Background = Brushes.Transparent;
             }
         }
+        #endregion
     }
 }
