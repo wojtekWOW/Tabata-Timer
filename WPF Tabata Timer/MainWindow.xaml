@@ -1,0 +1,111 @@
+﻿<Window x:Class="WPF_Tabata_Timer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_Tabata_Timer"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="Tabata Timer" Height="650" Width="300">
+    <StackPanel Background="Blue" x:Name="sp1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Lock Button -->
+            <Button x:Name="LockelementsButton" Grid.Column="0" 
+                    Foreground="White" Background="Transparent" FontSize="20"
+                    Content="Locked" Click="LockelementsButton_Click" />
+            
+            <!-- Status Block and Main Countdown -->
+            <TextBlock x:Name="StatusBlok" Grid.Column="1" 
+                       Foreground="White" Background="Transparent" 
+                       Text="Prepare" FontSize="20" TextAlignment="Center"/>
+            
+            <!-- Start/Pause Button -->
+            <Button x:Name="StartPauseButton" Grid.Column="2" 
+                    Foreground="White" Background="Transparent" FontSize="20"
+                    Content="Start" Click="StartPauseButton_Click"/>
+        </Grid>
+        
+        <!--TimerBlock-->
+        <TextBlock x:Name="TimerBlock" Text="10" FontSize="90"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+
+        <!-- Stage1 -->
+        <TextBlock x:Name="Stage1" Text="1. Prepare: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage2 -->
+        <TextBlock x:Name="Stage2" Text="2. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage3 -->
+        <TextBlock x:Name="Stage3" Text="3. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage4 -->
+        <TextBlock x:Name="Stage4" Text="4. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage5 -->
+        <TextBlock x:Name="Stage5" Text="5. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage6 -->
+        <TextBlock x:Name="Stage6" Text="6. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage7 -->
+        <TextBlock x:Name="Stage7" Text="7. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage8 -->
+        <TextBlock x:Name="Stage8" Text="8. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage9 -->
+        <TextBlock x:Name="Stage9" Text="9. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage10 -->
+        <TextBlock x:Name="Stage10" Text="10. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage11 -->
+        <TextBlock x:Name="Stage11" Text="11. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage12 -->
+        <TextBlock x:Name="Stage12" Text="12. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage13 -->
+        <TextBlock x:Name="Stage13" Text="13. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage14 -->
+        <TextBlock x:Name="Stage14" Text="14. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage15 -->
+        <TextBlock x:Name="Stage15" Text="15. Rest: 10" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Stage16 -->
+        <TextBlock x:Name="Stage16" Text="16. Work: 20" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        <!-- Finish -->
+        <TextBlock x:Name="Finish" Text="Finish" FontSize="20"
+                   TextAlignment="Center"
+                   Foreground="White" Background="Transparent"/>
+        
+
+    </StackPanel>
+    
+</Window>
