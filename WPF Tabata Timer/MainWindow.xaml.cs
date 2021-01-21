@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace WPF_Tabata_Timer
 {
@@ -29,50 +19,91 @@ namespace WPF_Tabata_Timer
         public MainWindow()
         {
             InitializeComponent();
-            Tabata tabata = new Tabata();
+            
             Tabata.Lanunched = false;
             Tabata.Paused = true;
-            Tabata.MaxTime = 240;
+            Tabata.CurrentStatus = (int)Status.Prepare;
+            Tabata.StageNumber = 1;
+            Tabata.MaxTime = 30;
+            Tabata.RemainingTime = Tabata.MaxTime;
+            Tabata.PausedExcerciseTime = 10;
+
         }
         #endregion
 
-        #region Lock and Unlock Buttons method not used
+        #region Reset Button method to restore app to initial stage
         /// <summary>
-        /// Lock and unlock buttons
+        /// Resets app to initial stage
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LockelementsButton_Click(object sender, RoutedEventArgs e)
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            if (LockelementsButton.Content.Equals("Locked"))
+            if (Tabata.Lanunched == true)
             {
-                LockelementsButton.Content = "Unlocked";
-                Tabata.Unlocked = true;
+                Tabata.Paused = true;
+                Tabata.Lanunched = false;
+                sp1.Background = Brushes.Blue;
+                StatusBlok.Text = "Prepare";
+                TimerBlock.Text = "10";
+
+
+                foreach (var stage in CreateStagesList())
+                {
+                    stage.Background = Brushes.Transparent;
+                }
             }
             else
-            {
-                LockelementsButton.Content = "Locked";
-                Tabata.Unlocked = false;
-            }
+                return;
+        }
+        #endregion
+
+        #region List of Stages
+        /// <summary>
+        /// Create a list of Stages 
+        /// </summary>
+        /// <returns></returns>
+        private List<TextBlock> CreateStagesList()
+        {
+            List<TextBlock> stages = new List<TextBlock>();
+
+            stages.Add(Stage1);
+            stages.Add(Stage2);
+            stages.Add(Stage3);
+            stages.Add(Stage4);
+            stages.Add(Stage5);
+            stages.Add(Stage6);
+            stages.Add(Stage7);
+            stages.Add(Stage8);
+            stages.Add(Stage9);
+            stages.Add(Stage10);
+            stages.Add(Stage11);
+            stages.Add(Stage12);
+            stages.Add(Stage13);
+            stages.Add(Stage14); 
+            stages.Add(Stage15);
+            stages.Add(Stage16);
+            stages.Add(Finish);
+
+            return stages;
         }
         #endregion
 
         #region Start/Pause Button Click Event Method
         private void StartPauseButton_Click(object sender, RoutedEventArgs e)
         {
-            int maxTime = 0;
             if (Tabata.Lanunched == false)
             {
                 Tabata.Lanunched = true;
-                Tabata.StageNumber = 1;
+                
                 sp1.Background = Brushes.LimeGreen;                
-                    Stage1.Background = Brushes.Green;
-                maxTime = Tabata.MaxTime;
+                    Stage1.Background = Brushes.Green;                
+                
             }
 
             if (Tabata.Paused == true)
             {
-                Tabata.CurrentStatus = (int)Status.Prepare;
+                
                 StartPauseButton.Content = "Pause";
                 Tabata.Paused = false;
 
@@ -87,7 +118,7 @@ namespace WPF_Tabata_Timer
                 */
                 #endregion
 
-                TopCountdown(maxTime, TimeSpan.FromSeconds(1), current => StatusBlok.Text = current.ToString());
+                TopCountdown(Tabata.MaxTime, TimeSpan.FromSeconds(1), current => StatusBlok.Text = current.ToString());
                 Countdown(10, TimeSpan.FromSeconds(1), current => TimerBlock.Text = current.ToString());
             }
             else
@@ -95,7 +126,6 @@ namespace WPF_Tabata_Timer
                 StartPauseButton.Content = "Start";
                 Tabata.Paused = true;
             }
-
         }
         #endregion
 
@@ -131,7 +161,7 @@ namespace WPF_Tabata_Timer
         }
         #endregion
 
-        #region Main excercise/rest countdown
+        #region Excercise/rest countdown
         /// <summary>
         /// Method counting down each excercise and rest
         /// </summary>
@@ -143,7 +173,12 @@ namespace WPF_Tabata_Timer
             DispatcherTimer dt = new DispatcherTimer();
             dt.Interval = interval;
             dt.Tick += (_, a) =>
-            {     
+            {
+                if (Tabata.Paused == true)
+                {
+                    dt.Stop();
+                    return;
+                }
                 if (Tabata.CurrentStatus == (int)Status.Finish)
                 {
                     TimerBlock.Text = "0";
@@ -205,8 +240,6 @@ namespace WPF_Tabata_Timer
         /// <param name="stageNumber">Number od a current stage</param>
         private void HighlightCurrentStage(int stageNumber)
         {
-            if (stageNumber == 1)
-                Stage1.Background = Brushes.Green;
             if (stageNumber == 2)
             {
                 Stage1.Background = Brushes.Transparent;

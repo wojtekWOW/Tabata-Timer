@@ -20,7 +20,7 @@
             <!-- Lock Button -->
             <Button x:Name="LockelementsButton" Grid.Column="0" 
                     Foreground="White" Background="Transparent" FontSize="20"
-                    Content="Locked" Click="LockelementsButton_Click" />
+                    Content="Reset" Click="ResetButton_Click" />
             
             <!-- Status Block and Main Countdown -->
             <TextBlock x:Name="StatusBlok" Grid.Column="1" 
